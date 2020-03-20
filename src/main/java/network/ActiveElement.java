@@ -1,4 +1,5 @@
 package network;
 
-public class ActiveElement {
+public abstract class ActiveElement extends NetworkElement {
+    //getIP
 }

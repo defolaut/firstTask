@@ -1,13 +1,13 @@
 package network;
 
-public class IPAdres {
-    private String ipAdres;
+public class IPAdress {
+    private String ipAdress;
 
-    public IPAdres(String ipAdres) {
-        this.ipAdres = ipAdres;
+    public IPAdress(String ipAdress) {
+        this.ipAdress = ipAdress;
     }
 
-    public String getIpAdres() {
-        return ipAdres;
+    public String getIpAdress() {
+        return ipAdress;
     }
 }

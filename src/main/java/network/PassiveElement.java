@@ -1,4 +1,4 @@
 package network;
 
-public class PassiveElement {
+public abstract class PassiveElement extends NetworkElement {
 }
