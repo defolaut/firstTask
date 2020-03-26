@@ -1,4 +1,4 @@
-package routeProvider;
+package routeProviders;
 
 public class RouteNotFoundException extends Exception {
     @Override

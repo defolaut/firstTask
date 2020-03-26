@@ -1,17 +1,22 @@
-package routeProvider;
+package routeProviders;
 
-import network.IPAdress;
-import network.Network;
-import network.Path;
-import network.PathElement;
+import network.*;
 
 import java.util.*;
 
 public class DomRu implements RouteProvider {
+
     private String providerName;
 
     public DomRu() {
         this.providerName = "DomRu";
+    }
+
+    private List<PathElement> getConnectionsFromPathElement(PathElement pathElement) {
+        if (pathElement.getInfo().equals("Firewall")) {
+            return ((Firewall)pathElement).getFirewallConnections(providerName);
+        }
+        return pathElement.getConnections();
     }
 
     private Path getPathByBFS(PathElement startNode, PathElement endNode) throws RouteNotFoundException {
@@ -28,7 +33,7 @@ public class DomRu implements RouteProvider {
             PathElement from = queue.peek();
             queue.poll();
 
-            for (PathElement to : from.getConnections()) {
+            for (PathElement to : getConnectionsFromPathElement(from)) {
                 if (!parents.containsKey(to)) {
                     queue.add(to);
                     parents.put(to, from);
@@ -79,4 +84,5 @@ public class DomRu implements RouteProvider {
     public String getProviderName() {
         return providerName;
     }
+
 }

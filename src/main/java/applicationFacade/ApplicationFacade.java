@@ -1,14 +1,15 @@
-package controller;
+package applicationFacade;
 
-import network.Network;
+import controller.Controller;
 import network.Path;
 import network.PathElement;
-import routeProvider.RouteNotFoundException;
+import routeProviders.RouteNotFoundException;
 
 import java.util.Scanner;
 
-public class Main {
-    public static void main(String[] args) {
+public class ApplicationFacade {
+
+    public static void startConsoleApplication(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter command, example: route network, provider, id1, id2");
         String inputString = scanner.nextLine();
@@ -23,11 +24,16 @@ public class Main {
             int id2 = Integer.parseInt(splitInput[4]);
 
             Path path = controller.getPathByNetProviderAndTwoID(net, provider, id1, id2);
+
+            System.out.println("Your path is:");
             for (PathElement pathElement : path.getPathElements()) {
-                System.out.println(pathElement.getID());
+                System.out.println(pathElement.getInfo() + " " + pathElement.getID());
             }
         } catch (RouteNotFoundException e) {
             e.printStackTrace();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
         }
     }
+    
 }

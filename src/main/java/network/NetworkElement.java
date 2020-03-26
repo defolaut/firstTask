@@ -1,5 +1,6 @@
 package network;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class NetworkElement implements PathElement {
@@ -9,5 +10,33 @@ public abstract class NetworkElement implements PathElement {
     protected String info;
     protected int id;
 
-    public abstract void addConnection(PathElement pathElement);
+    public void addConnection(PathElement pathElement) {
+        connections.add(pathElement);
+    }
+
+    public NetworkElement() {
+        timeDelay = 1;
+        cost = 1;
+        connections = new ArrayList<PathElement>();
+    }
+
+    public double getTimeDelay() {
+        return timeDelay;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public List<PathElement> getConnections() {
+        return connections;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public int getID() {
+        return id;
+    }
 }

@@ -2,9 +2,9 @@ package controller;
 
 import network.Network;
 import network.Path;
-import routeProvider.DomRu;
-import routeProvider.RouteNotFoundException;
-import routeProvider.RouteProvider;
+import routeProviders.DomRu;
+import routeProviders.RouteNotFoundException;
+import routeProviders.RouteProvider;
 
 import java.util.HashMap;
 
