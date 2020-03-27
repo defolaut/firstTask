@@ -1,5 +1,7 @@
 package network;
 
+import routeProviders.Visitor;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,4 +34,12 @@ public class Firewall extends ActiveElement {
     public void addLegalProvider(String provideName) {
         legalProviders.put(provideName, Boolean.TRUE);
     }
+
+    @Override
+    public void visitorHandler(Visitor visitor) {
+        if (legalProviders.containsKey(visitor.getVisitorProviderName())) {
+            visitorProtectedHandler(visitor);
+        }
+    }
+
 }

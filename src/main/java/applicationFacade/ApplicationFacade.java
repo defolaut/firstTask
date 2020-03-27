@@ -25,9 +25,15 @@ public class ApplicationFacade {
 
             Path path = controller.getPathByNetProviderAndTwoID(net, provider, id1, id2);
 
-            System.out.println("Your path is:");
+            System.out.println("Your path (min count elements) is:");
             for (PathElement pathElement : path.getPathElements()) {
                 System.out.println(pathElement.getInfo() + " " + pathElement.getID());
+            }
+
+            System.out.println("\n========================================\n");
+            System.out.println("Wanna see all possible routes between your ids? [y/n]");
+            if (scanner.next().equals("y")) {
+                controller.printAllRoutes(net, provider, id1, id2);
             }
         } catch (RouteNotFoundException e) {
             e.printStackTrace();

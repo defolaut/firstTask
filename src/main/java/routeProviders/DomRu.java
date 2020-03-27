@@ -7,6 +7,7 @@ import java.util.*;
 public class DomRu implements RouteProvider {
 
     private String providerName;
+    private ArrayList<Visitor> visitors = new ArrayList<Visitor>();
 
     public DomRu() {
         this.providerName = "DomRu";
@@ -26,7 +27,7 @@ public class DomRu implements RouteProvider {
         HashMap<PathElement, PathElement> parents = new HashMap<PathElement,PathElement>();
         parents.put(startNode, null);
 
-        PriorityQueue<PathElement> queue = new PriorityQueue<PathElement>();
+        ArrayDeque<PathElement> queue = new ArrayDeque<>();
         queue.add(startNode);
 
         while (!queue.isEmpty()) {
@@ -58,22 +59,21 @@ public class DomRu implements RouteProvider {
         return path;
     }
 
-    public Path getRoute(int firstID, int secondID, Network net) throws RouteNotFoundException {
+    private PathElement getPathElementFromID(int id, Network net) throws RouteNotFoundException {
         List<PathElement> nodes = net.getPathElements();
-        PathElement startNode = null;
-        PathElement endNode = null;
         for (PathElement pathElement : nodes) {
-            if (pathElement.getID() == firstID) {
-                startNode = pathElement;
-            }
-            if (pathElement.getID() == secondID) {
-                endNode = pathElement;
+            if (pathElement.getID() == id) {
+                return pathElement;
             }
         }
 
-        if (startNode.equals(null) || endNode.equals(null)) {
-            throw new RouteNotFoundException();
-        }
+        throw new RouteNotFoundException();
+    }
+
+    public Path getRoute(int firstID, int secondID, Network net) throws RouteNotFoundException {
+        PathElement startNode = getPathElementFromID(firstID, net);
+        PathElement endNode = getPathElementFromID(secondID, net);
+
         return getPathByBFS(startNode, endNode);
     }
 
@@ -85,4 +85,20 @@ public class DomRu implements RouteProvider {
         return providerName;
     }
 
+    @Override
+    public void addVisitor(Visitor visitor) {
+        visitors.add(visitor);
+    }
+
+    @Override
+    public ArrayList<Visitor> getAllVisitors(int firstID, int secondID, Network net) throws RouteNotFoundException {
+        PathElement startElement = getPathElementFromID(firstID, net);
+        PathElement endElement = getPathElementFromID(secondID, net);
+
+        Visitor visitor = new Visitor(this, endElement);
+
+        startElement.visitorHandler(visitor);
+
+        return visitors;
+    }
 }

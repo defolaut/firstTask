@@ -5,7 +5,9 @@ import network.Path;
 import routeProviders.DomRu;
 import routeProviders.RouteNotFoundException;
 import routeProviders.RouteProvider;
+import routeProviders.Visitor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Controller {
@@ -43,4 +45,17 @@ public class Controller {
 
         return routeProvider.getRoute(id1, id2, network);
     }
+
+    public void printAllRoutes(String net, String provider, int id1, int id2) throws RouteNotFoundException {
+        System.out.println("\nALL ROUTES BETWEEN id1 = " + id1 + " and id2 = " + id2 +
+                        " in Network " + net + " with Provider " + provider + ":");
+
+        int i = 1;
+        for (Visitor visitor : routeProviderHashMap.get(provider).getAllVisitors(id1, id2, networkHashMap.get(net))) {
+            System.out.println("\nRoute " + i + " is:");
+            visitor.printVisitor();
+            i++;
+        }
+    }
+
 }
