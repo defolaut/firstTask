@@ -10,7 +10,7 @@ public class Firewall extends ActiveElement {
     private HashMap<String, Boolean> legalProviders;
 
     {
-        legalProviders = new HashMap<String, Boolean>();
+        legalProviders = new HashMap<>();
     }
 
     public Firewall(int id) {
@@ -21,14 +21,14 @@ public class Firewall extends ActiveElement {
 
     @Override
     public List<PathElement> getConnections() {
-        return new ArrayList<PathElement>();
+        return new ArrayList<>();
     }
 
     public List<PathElement> getFirewallConnections(String providerName) {
         if (legalProviders.containsKey(providerName)) {
             return connections;
         }
-        return new ArrayList<PathElement>();
+        return new ArrayList<>();
     }
 
     public void addLegalProvider(String provideName) {

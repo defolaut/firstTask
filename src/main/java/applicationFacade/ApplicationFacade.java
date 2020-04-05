@@ -11,7 +11,8 @@ public class ApplicationFacade {
 
     public static void startConsoleApplication(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter command, example: route network, provider, id1, id2");
+        System.out.println("Enter command, example: route test, DomRu, id1, id2");
+        System.out.println("Also you can use: route myNetwork.txt, DomRu, id1, id2");
         String inputString = scanner.nextLine();
 
         Controller controller = Controller.getControllerWithAllProvidersAndNetworks();
@@ -40,6 +41,7 @@ public class ApplicationFacade {
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
+
     }
     
 }

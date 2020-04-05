@@ -12,5 +12,12 @@ public interface PathElement {
     String getInfo();
     int getID();
 
+    /** use it for finding all routes */
     void visitorHandler(Visitor visitor);
+
+    /** use it for file read/write */
+    void connectionsIDInit();
+    void addConnection(PathElement pathElement);
+    boolean containID(Integer id);
+
 }

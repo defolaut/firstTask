@@ -1,14 +1,20 @@
 package network;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Network {
     private String networkName;
-    private List<PathElement> pathElements;
+
+    private transient List<PathElement> pathElements;
 
     public Network(String networkName) {
-        pathElements = new ArrayList<PathElement>();
+        pathElements = new ArrayList<>();
         this.networkName = networkName;
     }
 
@@ -62,15 +68,83 @@ public class Network {
         return networkName;
     }
 
-    public void setNetworkName(String networkName) {
-        this.networkName = networkName;
-    }
-
     public List<PathElement> getPathElements() {
         return pathElements;
     }
 
     public void addPathElement(PathElement pathElement) {
+        if (pathElements == null) {
+            pathElements = new ArrayList<>();
+        }
         pathElements.add(pathElement);
+    }
+
+    public static Network getMyNetwork() {
+        Network myNetwork = new Network("myNetwork");
+        PC pc1 = new PC(1);
+        PC pc2 = new PC(2);
+        PC pc3 = new PC(3);
+        PC pc4 = new PC(4);
+
+        Network.addConnection(pc1, pc2);
+        Network.addConnection(pc2, pc4);
+        Network.addConnection(pc1, pc3);
+        Network.addConnection(pc3, pc4);
+
+        /*
+            pc1----pc2
+            |       |
+            pc3----pc4
+        */
+
+        myNetwork.addPathElement(pc1);
+        myNetwork.addPathElement(pc2);
+        myNetwork.addPathElement(pc3);
+        myNetwork.addPathElement(pc4);
+
+        return myNetwork;
+    }
+
+    /** here i am trying to serialize my network */
+    private List<NetworkElement> networkElements;
+
+    public void initBeforeWriting() {
+        networkElements = new ArrayList<>();
+        for (PathElement pe : pathElements) {
+            pe.connectionsIDInit();
+
+            networkElements.add((NetworkElement) pe);
+        }
+    }
+
+    public static void writeNetwork(BufferedWriter bw, Network network) {
+        network.initBeforeWriting();
+
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+        gson.toJson(network, bw);
+    }
+
+    public Network initAfterReading() {
+        for (NetworkElement ne : networkElements) {
+            this.addPathElement(ne);
+        }
+
+        for (PathElement from : pathElements) {
+            for (PathElement to : pathElements) {
+                if (from.containID(to.getID())) {
+                    from.addConnection(to);
+                }
+            }
+        }
+        return this;
+    }
+
+    public static Network readNetwork(BufferedReader br) {
+        Gson gson = new Gson();
+        Network net = gson.fromJson(br, Network.class);
+
+        return net.initAfterReading();
     }
 }

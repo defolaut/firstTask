@@ -1,0 +1,45 @@
+{
+  "networkName": "myNetwork",
+  "networkElements": [
+    {
+      "timeDelay": 1.0,
+      "cost": 1.0,
+      "info": "PC",
+      "id": 1,
+      "connectionsID": [
+        2,
+        3
+      ]
+    },
+    {
+      "timeDelay": 1.0,
+      "cost": 1.0,
+      "info": "PC",
+      "id": 2,
+      "connectionsID": [
+        1,
+        4
+      ]
+    },
+    {
+      "timeDelay": 1.0,
+      "cost": 1.0,
+      "info": "PC",
+      "id": 3,
+      "connectionsID": [
+        1,
+        4
+      ]
+    },
+    {
+      "timeDelay": 1.0,
+      "cost": 1.0,
+      "info": "PC",
+      "id": 4,
+      "connectionsID": [
+        2,
+        3
+      ]
+    }
+  ]
+}

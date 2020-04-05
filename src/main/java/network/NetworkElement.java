@@ -6,21 +6,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class NetworkElement implements PathElement {
+public class NetworkElement implements PathElement {
     protected double timeDelay;
     protected double cost;
-    protected List<PathElement> connections;
     protected String info;
     protected int id;
 
+    /** Troubles with file read/write (Stack Over Flow) */
+    protected transient List<PathElement> connections;
+
     public void addConnection(PathElement pathElement) {
+        if (connections == null) {
+            connections = new ArrayList<>();
+        }
+
         connections.add(pathElement);
     }
 
     public NetworkElement() {
         timeDelay = 1;
         cost = 1;
-        connections = new ArrayList<PathElement>();
+        connections = new ArrayList<>();
     }
 
     public double getTimeDelay() {
@@ -43,6 +49,11 @@ public abstract class NetworkElement implements PathElement {
         return id;
     }
 
+    @Override
+    public void visitorHandler(Visitor visitor) {
+        visitorProtectedHandler(visitor);
+    }
+
     protected void visitorProtectedHandler(Visitor visitor) {
         if (visitor.getEndElement().equals(this)) {
             visitor.endPoint();
@@ -56,6 +67,20 @@ public abstract class NetworkElement implements PathElement {
                 pathElement.visitorHandler(visitor.myClone());
             }
         }
+    }
+
+    /** Here is my wrapper for file read/write */
+    protected List<Integer> connectionsID;
+    public void connectionsIDInit() {
+        connectionsID = new ArrayList<>();
+        for (PathElement pe : connections) {
+            connectionsID.add(pe.getID());
+        }
+    }
+
+    @Override
+    public boolean containID(Integer id) {
+        return connectionsID.contains(id);
     }
 
     @Override

@@ -7,16 +7,36 @@ import routeProviders.RouteNotFoundException;
 import routeProviders.RouteProvider;
 import routeProviders.Visitor;
 
-import java.util.ArrayList;
+import java.io.*;
 import java.util.HashMap;
 
 public class Controller {
+    public static final String DEFAULT_FILE_NAME = "myNetwork.txt";
+
     private HashMap<String, RouteProvider> routeProviderHashMap;
     private HashMap<String, Network> networkHashMap;
 
-    public Controller() {
-        routeProviderHashMap = new HashMap<String, RouteProvider>();
-        networkHashMap = new HashMap<String, Network>();
+    private Controller() {
+        routeProviderHashMap = new HashMap<>();
+        networkHashMap = new HashMap<>();
+    }
+
+    private void putNetworkToFile(String fileName) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+            Network.writeNetwork(bw, Network.getMyNetwork());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addNetworkFromFile(String fileName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            addNetwork(Network.readNetwork(br));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Controller getControllerWithAllProvidersAndNetworks() {
@@ -24,6 +44,8 @@ public class Controller {
         controller.addRouteProvider(new DomRu());
         controller.addNetwork(Network.getTestNetwork());
 
+        controller.putNetworkToFile(Controller.DEFAULT_FILE_NAME);
+        controller.addNetworkFromFile(Controller.DEFAULT_FILE_NAME);
         return controller;
     }
 
@@ -36,14 +58,29 @@ public class Controller {
     }
 
     public Path getPathByNetProviderAndTwoID(String net, String provider, int id1, int id2) throws RouteNotFoundException {
-        if (!routeProviderHashMap.containsKey(provider) || !networkHashMap.containsKey(net)) {
+        Network network = getNetworkFromString(net);
+
+        if (!routeProviderHashMap.containsKey(provider) || network == null) {
             throw new RouteNotFoundException();
         }
 
         RouteProvider routeProvider = routeProviderHashMap.get(provider);
-        Network network = networkHashMap.get(net);
-
         return routeProvider.getRoute(id1, id2, network);
+    }
+
+    private Network getNetworkFromString(String net) {
+        if (net.contains(".txt")) {
+            try (BufferedReader br = new BufferedReader(new FileReader(net))) {
+                return Network.readNetwork(br);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+            return null;
+        } else {
+            return networkHashMap.get(net);
+        }
     }
 
     public void printAllRoutes(String net, String provider, int id1, int id2) throws RouteNotFoundException {
@@ -51,7 +88,7 @@ public class Controller {
                         " in Network " + net + " with Provider " + provider + ":");
 
         int i = 1;
-        for (Visitor visitor : routeProviderHashMap.get(provider).getAllVisitors(id1, id2, networkHashMap.get(net))) {
+        for (Visitor visitor : routeProviderHashMap.get(provider).getAllVisitors(id1, id2, getNetworkFromString(net))) {
             System.out.println("\nRoute " + i + " is:");
             visitor.printVisitor();
             i++;
