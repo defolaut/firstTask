@@ -1,4 +1,4 @@
-package network;
+package network.elements;
 
 import routeProviders.Visitor;
 
@@ -7,16 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Firewall extends ActiveElement {
-    private HashMap<String, Boolean> legalProviders;
 
-    {
-        legalProviders = new HashMap<>();
-    }
+    private HashMap<String, Boolean> legalProviders = new HashMap<>();
 
     public Firewall(int id) {
         super();
-        info = "Firewall";
-        this.id = id;
+        setInfo("Firewall");
+        setId(id);
     }
 
     @Override
@@ -26,7 +23,7 @@ public class Firewall extends ActiveElement {
 
     public List<PathElement> getFirewallConnections(String providerName) {
         if (legalProviders.containsKey(providerName)) {
-            return connections;
+            return getConnections();
         }
         return new ArrayList<>();
     }

@@ -1,4 +1,4 @@
-package network;
+package network.elements;
 
 import routeProviders.Visitor;
 
@@ -14,10 +14,5 @@ public interface PathElement {
 
     /** use it for finding all routes */
     void visitorHandler(Visitor visitor);
-
-    /** use it for file read/write */
-    void connectionsIDInit();
-    void addConnection(PathElement pathElement);
-    boolean containID(Integer id);
 
 }
