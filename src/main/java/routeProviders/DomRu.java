@@ -1,13 +1,15 @@
 package routeProviders;
 
 import network.*;
+import elements.Firewall;
+import elements.PathElement;
 
 import java.util.*;
 
 public class DomRu implements RouteProvider {
 
     private String providerName;
-    private ArrayList<Visitor> visitors = new ArrayList<Visitor>();
+    private ArrayList<Visitor> visitors = new ArrayList<>();
 
     public DomRu() {
         this.providerName = "DomRu";
@@ -24,7 +26,7 @@ public class DomRu implements RouteProvider {
         Path path = new Path();
         path.addPathElement(startNode);
 
-        HashMap<PathElement, PathElement> parents = new HashMap<PathElement,PathElement>();
+        HashMap<PathElement, PathElement> parents = new HashMap<>();
         parents.put(startNode, null);
 
         ArrayDeque<PathElement> queue = new ArrayDeque<>();
@@ -75,10 +77,6 @@ public class DomRu implements RouteProvider {
         PathElement endNode = getPathElementFromID(secondID, net);
 
         return getPathByBFS(startNode, endNode);
-    }
-
-    public Path getRouteByIP(IPAdress firstIP, IPAdress secondIP, Network net) throws RouteNotFoundException {
-        return null;
     }
 
     public String getProviderName() {

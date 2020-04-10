@@ -1,5 +1,6 @@
-package network.elements;
+package elements;
 
+import com.google.gson.annotations.Expose;
 import routeProviders.Visitor;
 
 import java.util.ArrayList;
@@ -12,8 +13,8 @@ public abstract class NetworkElement implements PathElement {
     private String info;
     private int id;
 
-    /** Troubles with file read/write (Stack Over Flow) */
-    private transient List<PathElement> connections;
+    @Expose
+    private List<PathElement> connections;
 
     public void addConnection(PathElement pathElement) {
         if (connections == null) {
@@ -92,12 +93,22 @@ public abstract class NetworkElement implements PathElement {
         return Double.compare(that.timeDelay, timeDelay) == 0 &&
                 Double.compare(that.cost, cost) == 0 &&
                 id == that.id &&
-                Objects.equals(info, that.info) &&
-                Objects.equals(connections, that.connections);
+                Objects.equals(info, that.info);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(timeDelay, cost, info, id, connections);
+        return Objects.hash(timeDelay, cost, info, id);
+    }
+
+    @Override
+    public String toString() {
+        return "NetworkElement{" +
+                "timeDelay=" + timeDelay +
+                ", cost=" + cost +
+                ", info='" + info + '\'' +
+                ", id=" + id +
+                ", connections=" + connections +
+                '}';
     }
 }

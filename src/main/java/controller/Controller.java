@@ -1,7 +1,11 @@
 package controller;
 
+import network.MyNetworkBuilder;
 import network.Network;
 import network.Path;
+import network.TestNetworkBuilder;
+import networkIO.NetworkJsonSaver;
+import networkIO.NetworkObjectSaver;
 import routeProviders.DomRu;
 import routeProviders.RouteNotFoundException;
 import routeProviders.RouteProvider;
@@ -9,32 +13,49 @@ import routeProviders.Visitor;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Controller {
-    public static final String DEFAULT_FILE_NAME = "myNetwork.txt";
+    public static final String MY_NETWORK_FILE_NAME = "myNetwork.txt";
+    public static final String TEST_NETWORK_FILE_NAME = "test.txt";
 
-    private HashMap<String, RouteProvider> routeProviderHashMap;
-    private HashMap<String, Network> networkHashMap;
+    private Map<String, RouteProvider> routeProviderHashMap = new HashMap<>();
+    private Map<String, Network> networkHashMap = new HashMap<>();
 
-    private Controller() {
-        routeProviderHashMap = new HashMap<>();
-        networkHashMap = new HashMap<>();
+    private Controller() {}
+
+    private void putNetworkToFile(Network network, String fileName) {
+        try {
+            new NetworkObjectSaver().writeNetwork(network, fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void putNetworkToFile(String fileName) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
-            Network.writeNetwork(bw, Network.getMyNetwork());
+    private void putNetworkToFileWithJson(Network network, String fileName) {
+        try {
+            new NetworkJsonSaver().writeNetwork(network, fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private void addNetworkFromFile(String fileName) {
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            addNetwork(Network.readNetwork(br));
+        try {
+            addNetwork(new NetworkObjectSaver().readNetwork(fileName));
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassCastException e) {
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addNetworkFromFileWithJson(String fileName) {
+        try {
+            addNetwork(new NetworkJsonSaver().readNetwork(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -42,10 +63,17 @@ public class Controller {
     public static Controller getControllerWithAllProvidersAndNetworks() {
         Controller controller = new Controller();
         controller.addRouteProvider(new DomRu());
-        controller.addNetwork(Network.getTestNetwork());
+        //controller.addNetwork(new MyNetworkBuilder().getNetwork());
+        //controller.addNetwork(new TestNetworkBuilder().getNetwork());
+        controller.addNetworkFromFile(Controller.TEST_NETWORK_FILE_NAME);
+        controller.addNetworkFromFile(Controller.MY_NETWORK_FILE_NAME);
+        //controller.addNetworkFromFileWithJson(Controller.TEST_NETWORK_FILE_NAME);
+        //controller.addNetworkFromFileWithJson(Controller.MY_NETWORK_FILE_NAME);
 
-        controller.putNetworkToFile(Controller.DEFAULT_FILE_NAME);
-        controller.addNetworkFromFile(Controller.DEFAULT_FILE_NAME);
+        controller.putNetworkToFile(new MyNetworkBuilder().getNetwork(), Controller.MY_NETWORK_FILE_NAME);
+        controller.putNetworkToFile(new TestNetworkBuilder().getNetwork(), Controller.TEST_NETWORK_FILE_NAME);
+        //controller.putNetworkToFileWithJson(new MyNetworkBuilder().getNetwork(), Controller.MY_NETWORK_FILE_NAME);
+        //controller.putNetworkToFileWithJson(new TestNetworkBuilder().getNetwork(), Controller.TEST_NETWORK_FILE_NAME);
         return controller;
     }
 
@@ -70,11 +98,11 @@ public class Controller {
 
     private Network getNetworkFromString(String net) {
         if (net.contains(".txt")) {
-            try (BufferedReader br = new BufferedReader(new FileReader(net))) {
-                return Network.readNetwork(br);
+            try {
+                new NetworkJsonSaver().readNetwork(net);
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (ClassCastException e) {
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
             return null;

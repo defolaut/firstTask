@@ -1,4 +1,4 @@
-package network.elements;
+package elements;
 
 public abstract class ActiveElement extends NetworkElement {
 }

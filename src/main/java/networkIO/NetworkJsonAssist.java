@@ -1,7 +1,6 @@
-package networkUtils;
+package networkIO;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import elements.NetworkElement;
 import elements.PathElement;
 import network.Network;
@@ -26,7 +25,16 @@ public class NetworkJsonAssist {
             );
             networkElementWrappers.add(networkElementWrapper);
         }
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+                return fieldAttributes.getName().equals("connections");
+            }
+            @Override
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).create();
         return gson.toJson(new NetworkWrapper(network.getNetworkName(), networkElementWrappers));
     }
 

@@ -2,7 +2,7 @@ package applicationFacade;
 
 import controller.Controller;
 import network.Path;
-import network.PathElement;
+import elements.PathElement;
 import routeProviders.RouteNotFoundException;
 
 import java.util.Scanner;

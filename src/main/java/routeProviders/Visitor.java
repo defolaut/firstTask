@@ -1,6 +1,6 @@
 package routeProviders;
 
-import network.PathElement;
+import elements.PathElement;
 
 import java.util.ArrayList;
 

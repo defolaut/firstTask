@@ -1,14 +1,15 @@
-package network.elements;
+package elements;
 
 import routeProviders.Visitor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Firewall extends ActiveElement {
 
-    private HashMap<String, Boolean> legalProviders = new HashMap<>();
+    private Map<String, Boolean> legalProviders = new HashMap<>();
 
     public Firewall(int id) {
         super();

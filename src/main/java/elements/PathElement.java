@@ -1,10 +1,11 @@
-package network.elements;
+package elements;
 
 import routeProviders.Visitor;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface PathElement {
+public interface PathElement extends Serializable {
 
     double getTimeDelay();
     double getCost();

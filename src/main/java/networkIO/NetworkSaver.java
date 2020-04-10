@@ -1,4 +1,4 @@
-package networkUtils;
+package networkIO;
 
 import network.Network;
 
