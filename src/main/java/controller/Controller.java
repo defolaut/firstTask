@@ -6,6 +6,7 @@ import network.Path;
 import network.TestNetworkBuilder;
 import networkIO.NetworkJsonSaver;
 import networkIO.NetworkObjectSaver;
+import networkIO.NetworkSaver;
 import routeProviders.DomRu;
 import routeProviders.RouteNotFoundException;
 import routeProviders.RouteProvider;
@@ -21,59 +22,48 @@ public class Controller {
 
     private Map<String, RouteProvider> routeProviderHashMap = new HashMap<>();
     private Map<String, Network> networkHashMap = new HashMap<>();
+    private boolean jsonInfo = false;
 
     private Controller() {}
 
+    public void setJsonInfo(boolean jsonInfo) {
+        this.jsonInfo = jsonInfo;
+    }
+
     private void putNetworkToFile(Network network, String fileName) {
         try {
-            new NetworkObjectSaver().writeNetwork(network, fileName);
+            NetworkSaver mySaver = jsonInfo ? new NetworkJsonSaver() : new NetworkObjectSaver();
+            mySaver.writeNetwork(network, fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void putNetworkToFileWithJson(Network network, String fileName) {
+    private Network getNetworkFromFile(String fileName) {
         try {
-            new NetworkJsonSaver().writeNetwork(network, fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void addNetworkFromFile(String fileName) {
-        try {
-            addNetwork(new NetworkObjectSaver().readNetwork(fileName));
+            NetworkSaver mySaver = jsonInfo ? new NetworkJsonSaver() : new NetworkObjectSaver();
+            return mySaver.readNetwork(fileName);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    private void addNetworkFromFileWithJson(String fileName) {
-        try {
-            addNetwork(new NetworkJsonSaver().readNetwork(fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Controller getControllerWithAllProvidersAndNetworks() {
+    public static Controller getControllerWithAllProvidersAndNetworks(boolean jsonInfo) {
         Controller controller = new Controller();
+        controller.setJsonInfo(jsonInfo);
         controller.addRouteProvider(new DomRu());
-        //controller.addNetwork(new MyNetworkBuilder().getNetwork());
-        //controller.addNetwork(new TestNetworkBuilder().getNetwork());
-        controller.addNetworkFromFile(Controller.TEST_NETWORK_FILE_NAME);
-        controller.addNetworkFromFile(Controller.MY_NETWORK_FILE_NAME);
-        //controller.addNetworkFromFileWithJson(Controller.TEST_NETWORK_FILE_NAME);
-        //controller.addNetworkFromFileWithJson(Controller.MY_NETWORK_FILE_NAME);
 
         controller.putNetworkToFile(new MyNetworkBuilder().getNetwork(), Controller.MY_NETWORK_FILE_NAME);
         controller.putNetworkToFile(new TestNetworkBuilder().getNetwork(), Controller.TEST_NETWORK_FILE_NAME);
-        //controller.putNetworkToFileWithJson(new MyNetworkBuilder().getNetwork(), Controller.MY_NETWORK_FILE_NAME);
-        //controller.putNetworkToFileWithJson(new TestNetworkBuilder().getNetwork(), Controller.TEST_NETWORK_FILE_NAME);
+
+        //controller.addNetwork(new MyNetworkBuilder().getNetwork());
+        //controller.addNetwork(new TestNetworkBuilder().getNetwork());
+        controller.addNetwork(controller.getNetworkFromFile(Controller.TEST_NETWORK_FILE_NAME));
+        controller.addNetwork(controller.getNetworkFromFile(Controller.MY_NETWORK_FILE_NAME));
+
         return controller;
     }
 
@@ -97,18 +87,9 @@ public class Controller {
     }
 
     private Network getNetworkFromString(String net) {
-        if (net.contains(".txt")) {
-            try {
-                new NetworkJsonSaver().readNetwork(net);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            return null;
-        } else {
-            return networkHashMap.get(net);
-        }
+        if (net.contains(".txt"))
+            return getNetworkFromFile(net);
+        return networkHashMap.get(net);
     }
 
     public void printAllRoutes(String net, String provider, int id1, int id2) throws RouteNotFoundException {

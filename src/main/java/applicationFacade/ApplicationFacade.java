@@ -11,12 +11,17 @@ public class ApplicationFacade {
 
     public static void startConsoleApplication(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        String inputString;
+
+        System.out.println("Do you want to use Json? [y/n]");
+        Controller controller = Controller.getControllerWithAllProvidersAndNetworks(
+                "y".equals(scanner.nextLine()) ? true : false
+        );
+
+
         System.out.println("Enter command, example: route test, DomRu, id1, id2");
         System.out.println("Also you can use: route myNetwork.txt, DomRu, id1, id2");
-        String inputString = scanner.nextLine();
-
-        Controller controller = Controller.getControllerWithAllProvidersAndNetworks();
-
+        inputString = scanner.nextLine();
         String[] splitInput = inputString.split("\\s");
         try {
             String net = splitInput[1].split(",")[0];

@@ -1,6 +1,5 @@
 package elements;
 
-import com.google.gson.annotations.Expose;
 import routeProviders.Visitor;
 
 import java.util.ArrayList;
@@ -12,8 +11,6 @@ public abstract class NetworkElement implements PathElement {
     private double cost;
     private String info;
     private int id;
-
-    @Expose
     private List<PathElement> connections;
 
     public void addConnection(PathElement pathElement) {

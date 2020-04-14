@@ -3,18 +3,20 @@ package elements;
 import routeProviders.Visitor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Firewall extends ActiveElement {
 
-    private Map<String, Boolean> legalProviders = new HashMap<>();
+    private List<String> legalProviders = new ArrayList<>();
 
     public Firewall(int id) {
         super();
         setInfo("Firewall");
         setId(id);
+    }
+
+    public List<String> getLegalProviders() {
+        return legalProviders;
     }
 
     @Override
@@ -23,19 +25,19 @@ public class Firewall extends ActiveElement {
     }
 
     public List<PathElement> getFirewallConnections(String providerName) {
-        if (legalProviders.containsKey(providerName)) {
+        if (legalProviders.contains(providerName)) {
             return getConnections();
         }
         return new ArrayList<>();
     }
 
     public void addLegalProvider(String provideName) {
-        legalProviders.put(provideName, Boolean.TRUE);
+        legalProviders.add(provideName);
     }
 
     @Override
     public void visitorHandler(Visitor visitor) {
-        if (legalProviders.containsKey(visitor.getVisitorProviderName())) {
+        if (legalProviders.contains(visitor.getVisitorProviderName())) {
             visitorProtectedHandler(visitor);
         }
     }

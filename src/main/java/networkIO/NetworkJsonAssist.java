@@ -1,10 +1,13 @@
 package networkIO;
 
 import com.google.gson.*;
+import elements.Firewall;
 import elements.NetworkElement;
+import elements.PC;
 import elements.PathElement;
 import network.Network;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,28 +22,33 @@ public class NetworkJsonAssist {
                 ids.add(connection.getID());
             }
             NetworkElement networkElement = (NetworkElement) pathElement;
-            NetworkElementWrapper networkElementWrapper = new NetworkElementWrapper(networkElement.getClass().getTypeName(),
+            NetworkElementWrapper networkElementWrapper = new NetworkElementWrapper(
                     ids,
                     networkElement
             );
             networkElementWrappers.add(networkElementWrapper);
         }
-        Gson gson = new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
-            @Override
-            public boolean shouldSkipField(FieldAttributes fieldAttributes) {
-                return fieldAttributes.getName().equals("connections");
-            }
-            @Override
-            public boolean shouldSkipClass(Class<?> aClass) {
-                return false;
-            }
-        }).create();
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(NetworkElement.class, new NetworkElementSerializer())
+                .registerTypeAdapter(NetworkElementWrapper.class, new NetworkElementWrapperSerializer())
+                .registerTypeAdapter(PC.class,
+                        (JsonSerializer<PC>) (pc, type, jsonSerializationContext)
+                                -> new NetworkElementSerializer().serialize(pc, type, jsonSerializationContext))
+                .registerTypeAdapter(Firewall.class,
+                        (JsonSerializer<Firewall>) (firewall, type, jsonSerializationContext)
+                                -> new NetworkElementSerializer().serialize(firewall, type, jsonSerializationContext))
+                .create();
         return gson.toJson(new NetworkWrapper(network.getNetworkName(), networkElementWrappers));
     }
 
     public static Network getNetworkFromJsonString(String jsonString) throws ClassNotFoundException {
         try {
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .registerTypeAdapter(NetworkElement.class, new NetworkElementDeserializer())
+                    .registerTypeAdapter(NetworkElementWrapper.class, new NetworkElementWrapperDeserializer())
+                    .create();
             NetworkWrapper networkWrapper = gson.fromJson(jsonString, NetworkWrapper.class);
             Network network = new Network(networkWrapper.getNetworkName());
             for (NetworkElementWrapper networkElementWrapper : networkWrapper.getNetworkElementWrappers()) {
