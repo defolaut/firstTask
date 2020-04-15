@@ -3,7 +3,7 @@ package routeProviders;
 import network.Network;
 import network.Path;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface RouteProvider {
 
@@ -13,6 +13,6 @@ public interface RouteProvider {
 
     void addVisitor(Visitor visitor);
 
-    ArrayList<Visitor> getAllVisitors(int firstID, int secondID, Network net) throws RouteNotFoundException;
+    List<Visitor> getAllVisitors(int firstID, int secondID, Network net) throws RouteNotFoundException;
 
 }

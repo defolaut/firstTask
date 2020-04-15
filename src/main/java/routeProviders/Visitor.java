@@ -3,16 +3,15 @@ package routeProviders;
 import elements.PathElement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Visitor {
     private PathElement endElement;
-
     private RouteProvider myProvider;
-    private ArrayList<PathElement> pathElements;
+    private List<PathElement> pathElements = new ArrayList<>();
 
     public Visitor(RouteProvider routeProvider, PathElement endElement) {
         myProvider = routeProvider;
-        pathElements = new ArrayList<PathElement>();
         this.endElement = endElement;
     }
 

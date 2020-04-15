@@ -1,9 +1,7 @@
 package networkIO;
 
 import com.google.gson.*;
-import elements.Firewall;
-import elements.NetworkElement;
-import elements.PC;
+import elements.*;
 
 import java.lang.reflect.Type;
 
@@ -18,6 +16,10 @@ public class NetworkElementDeserializer implements JsonDeserializer<NetworkEleme
 
         if ("PC".equals(networkElementType)) {
             result = new PC(id);
+        } else if ("Hub".equals(networkElementType)) {
+            result = new Hub(id);
+        } else if ("Cabel".equals(networkElementType)) {
+            result = new Cabel(id);
         } else if ("Firewall".equals(networkElementType)) {
             result = new Firewall(id);
             JsonArray legalProviders = jsonObject.getAsJsonArray("legalProviders");

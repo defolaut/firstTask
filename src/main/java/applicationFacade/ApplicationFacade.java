@@ -9,13 +9,29 @@ import java.util.Scanner;
 
 public class ApplicationFacade {
 
+    public static boolean jsonQuestion(Scanner scanner) {
+        System.out.println("Do you want to use Json? [y/n]");
+        return "y".equals(scanner.nextLine());
+    }
+
+    public static void startTestApplication(String[] args) {
+        Controller controller = Controller.getTestController(
+                jsonQuestion(new Scanner(System.in))
+        );
+        try {
+            controller.printAllRoutes("bigNetwork", "DomRu", 9, 109);
+        } catch (RouteNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void startConsoleApplication(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String inputString;
 
         System.out.println("Do you want to use Json? [y/n]");
         Controller controller = Controller.getControllerWithAllProvidersAndNetworks(
-                "y".equals(scanner.nextLine()) ? true : false
+                ApplicationFacade.jsonQuestion(scanner)
         );
 
 

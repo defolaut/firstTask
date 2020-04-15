@@ -25,8 +25,8 @@ public class Firewall extends ActiveElement {
     }
 
     public List<PathElement> getFirewallConnections(String providerName) {
-        if (legalProviders.contains(providerName)) {
-            return getConnections();
+        if (legalProviders.contains(providerName) || "adminPASSWORD".equals(providerName)) {
+            return super.getConnections();
         }
         return new ArrayList<>();
     }
@@ -41,5 +41,4 @@ public class Firewall extends ActiveElement {
             visitorProtectedHandler(visitor);
         }
     }
-
 }

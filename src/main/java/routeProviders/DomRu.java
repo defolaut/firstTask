@@ -9,7 +9,7 @@ import java.util.*;
 public class DomRu implements RouteProvider {
 
     private String providerName;
-    private ArrayList<Visitor> visitors = new ArrayList<>();
+    private List<Visitor> visitors = new ArrayList<>();
 
     public DomRu() {
         this.providerName = "DomRu";
@@ -89,7 +89,7 @@ public class DomRu implements RouteProvider {
     }
 
     @Override
-    public ArrayList<Visitor> getAllVisitors(int firstID, int secondID, Network net) throws RouteNotFoundException {
+    public List<Visitor> getAllVisitors(int firstID, int secondID, Network net) throws RouteNotFoundException {
         PathElement startElement = getPathElementFromID(firstID, net);
         PathElement endElement = getPathElementFromID(secondID, net);
 

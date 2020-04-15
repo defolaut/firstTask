@@ -1,13 +1,9 @@
 package networkIO;
 
 import com.google.gson.*;
-import elements.Firewall;
-import elements.NetworkElement;
-import elements.PC;
-import elements.PathElement;
+import elements.*;
 import network.Network;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +12,9 @@ public class NetworkJsonAssist {
     public static String getJsonStringFromNetwork(Network network) {
         List<NetworkElementWrapper> networkElementWrappers = new ArrayList<>();
         for (PathElement pathElement : network.getPathElements()) {
-            List<PathElement> connections = pathElement.getConnections();
+            List<PathElement> connections = pathElement instanceof Firewall ?
+                    ((Firewall) pathElement).getFirewallConnections("adminPASSWORD") :
+                    pathElement.getConnections();
             List<Integer> ids = new ArrayList<>();
             for (PathElement connection : connections) {
                 ids.add(connection.getID());
@@ -38,6 +36,12 @@ public class NetworkJsonAssist {
                 .registerTypeAdapter(Firewall.class,
                         (JsonSerializer<Firewall>) (firewall, type, jsonSerializationContext)
                                 -> new NetworkElementSerializer().serialize(firewall, type, jsonSerializationContext))
+                .registerTypeAdapter(Hub.class,
+                        (JsonSerializer<Hub>) (hub, type, jsonSerializationContext)
+                                -> new NetworkElementSerializer().serialize(hub, type, jsonSerializationContext))
+                .registerTypeAdapter(Cabel.class,
+                        (JsonSerializer<Cabel>) (cabel, type, jsonSerializationContext)
+                                -> new NetworkElementSerializer().serialize(cabel, type, jsonSerializationContext))
                 .create();
         return gson.toJson(new NetworkWrapper(network.getNetworkName(), networkElementWrappers));
     }

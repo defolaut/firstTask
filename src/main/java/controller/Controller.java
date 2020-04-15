@@ -1,9 +1,6 @@
 package controller;
 
-import network.MyNetworkBuilder;
-import network.Network;
-import network.Path;
-import network.TestNetworkBuilder;
+import network.*;
 import networkIO.NetworkJsonSaver;
 import networkIO.NetworkObjectSaver;
 import networkIO.NetworkSaver;
@@ -19,6 +16,7 @@ import java.util.Map;
 public class Controller {
     public static final String MY_NETWORK_FILE_NAME = "myNetwork.txt";
     public static final String TEST_NETWORK_FILE_NAME = "test.txt";
+    public static final String BIG_NETWORK_FILE_NAME = "bigNetwork.txt";
 
     private Map<String, RouteProvider> routeProviderHashMap = new HashMap<>();
     private Map<String, Network> networkHashMap = new HashMap<>();
@@ -64,6 +62,16 @@ public class Controller {
         controller.addNetwork(controller.getNetworkFromFile(Controller.TEST_NETWORK_FILE_NAME));
         controller.addNetwork(controller.getNetworkFromFile(Controller.MY_NETWORK_FILE_NAME));
 
+        return controller;
+    }
+
+    public static Controller getTestController(boolean jsonInfo) {
+        Controller controller = new Controller();
+        controller.setJsonInfo(jsonInfo);
+
+        controller.addRouteProvider(new DomRu());
+        controller.putNetworkToFile(new BigNetworkBuilder().getNetwork(), Controller.BIG_NETWORK_FILE_NAME);
+        controller.addNetwork(controller.getNetworkFromFile(Controller.BIG_NETWORK_FILE_NAME));
         return controller;
     }
 
